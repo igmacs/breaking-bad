@@ -88,11 +88,14 @@
 (defvar bb-insert-map (make-sparse-keymap)
   "Keymap for my insert state.")
 
+(defvar-local bb-change-tick-counter 0)
+
 (defun bb-exit-insert-mode-when-not-inserting ()
-  (unless (member this-command (list #'self-insert-command
-                                     #'bb-self-insert-remap ;; This is the command that usually enables insert-mode
-                                 ))
-    (bb-normal-mode 1)))
+  (let ((last-tick-counter bb-change-tick-counter)
+        (new-tick-counter (setq-local bb-change-tick-counter (buffer-chars-modified-tick))))
+    (unless (eq this-command #'bb-self-insert-remap) ;; This is the command that usually enables insert-mode
+      (when (eq last-tick-counter new-tick-counter)
+        (bb-normal-mode 1)))))
 
 (define-minor-mode bb-insert-mode
   "My modal insert state."
