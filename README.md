@@ -41,14 +41,14 @@ and insert modes.
 This level introduces a minor mode for normal-mode, which can be
 enabled globally, and which remaps `self-insert-command` to a command
 that calls the function in the variable `bb-normal-binding-for-<key>`,
-which by default is just doing nothing. This is done in a way that
-still works for already existing remaps, like
-`org-self-insert-command`: if that command would end up
-self-inserting, it would do the new action instead, otherwise the
-previous remap takes preference. The binding `i` will enter
-insert-mode minor mode in the current buffer
+which by default is just doing nothing. This tries to place nicely
+with already exisiting remaps like `org-self-insert-command`: if the
+default is not overriden this package will allow that remap to do its
+thing, and only interfere when it actually tries to self insert.
 
-insert-mode is just normal Emacs behaviour but
+This level also introduces the minor mode for insert-mode, which will
+be enabled for the current buffer when pressing `i` in
+normal-mode. This mode is just normal Emacs behaviour, except
 - `C-g` exits it and enters normal-mode again
 
 ## Comparison with other packages
