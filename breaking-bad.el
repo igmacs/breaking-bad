@@ -13,8 +13,9 @@
   "My modal normal state."
   :init-value nil
   :lighter " N"
-  :keymap bb-normal-map)
-
+  :keymap bb-normal-map
+  (if bb-normal-mode
+      (bb-insert-mode -1)))
 
 (defvar bb-excluded-modes nil)
 
@@ -69,7 +70,7 @@
                 (format "<remap> <%s>" (symbol-name binding))
                 (lambda () (interactive) (message "Use normal mode binding!!!")))))
 
-(bb-set-normal-key "i" (lambda (&rest args) (bb-normal-mode -1) (bb-insert-mode 1)))
+(bb-set-normal-key "i" #'bb-insert-mode)
 (bb-set-normal-key "h" #'backward-char)
 (bb-set-normal-key "j" #'next-line)
 (bb-set-normal-key "k" #'previous-line)
@@ -87,11 +88,22 @@
 (defvar bb-insert-map (make-sparse-keymap)
   "Keymap for my insert state.")
 
+(defun bb-exit-insert-mode-when-not-inserting ()
+  (unless (member this-command (list #'self-insert-command
+                                     #'bb-self-insert-remap ;; This is the command that usually enables insert-mode
+                                 ))
+    (bb-normal-mode 1)))
+
 (define-minor-mode bb-insert-mode
   "My modal insert state."
   :init-value nil
   :lighter " N"
-  :keymap bb-insert-map)
+  :keymap bb-insert-map
+  (if bb-insert-mode
+      (progn
+        (bb-normal-mode -1)
+        (add-hook 'post-command-hook #'bb-exit-insert-mode-when-not-inserting nil t))
+    (remove-hook 'post-command-hook #'bb-exit-insert-mode-when-not-inserting t)))
 
 (define-key bb-insert-map (kbd "C-g")
             (lambda () (interactive) (bb-insert-mode -1) (bb-normal-mode 1)))
