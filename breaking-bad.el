@@ -1,4 +1,4 @@
-;;; breaking-bad.el --- Incremental adoption of modal editing in Emacs
+;;; breaking-bad.el --- Incremental adoption of modal editing in Emacs -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -36,6 +36,14 @@
 (defun bb-normal-key-variable (key)
   (intern (concat "bb-normal-binding-for-" key)))
 
+(defun bb-self-insert-undefined-in-buffer (buffer)
+  (let ((orig (symbol-function #'self-insert-command)))
+    (lambda (&rest args)
+      (interactive)
+      (if (eq buffer (current-buffer))
+          (apply #'bb-normal-key-undefined args)
+        (call-interactively orig)))))
+
 (defun bb-self-insert-remap ()
   (interactive)
   (let* ((keys (this-command-keys-vector)) ; full key sequence as a vector
@@ -49,7 +57,7 @@
             (apply key-function (list arg))
           (apply key-function nil))
       (if original-remap
-          (cl-letf (((symbol-function #'self-insert-command) #' bb-normal-key-undefined))
+          (cl-letf (((symbol-function #'self-insert-command) (bb-self-insert-undefined-in-buffer (current-buffer))))
             (call-interactively original-remap))
         (funcall #'undefined)))))
 
