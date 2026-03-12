@@ -31,9 +31,21 @@
 
 
 (defun bb--normal-key-undefined (&rest _args)
-  "Like `undefined` but receiving any number of args."
+  "Command to ignore pressed key and following ones \`C-g' is pressed."
   (interactive)
-  (funcall #'undefined))
+  (funcall #'undefined)
+  (let ((old overriding-terminal-local-map)
+        (map (make-sparse-keymap))
+        (key (key-description (this-single-command-keys))))
+    (define-key map [t] (lambda ()
+                          (interactive)
+                          (message "%s was undefined. Press C-g to go back to normal mode" key)))
+    (define-key map (kbd "C-g")
+      (lambda ()
+        (interactive)
+        (setq overriding-terminal-local-map old)
+        (keyboard-quit)))
+    (setq overriding-terminal-local-map map)))
 
 (defun bb--normal-key-variable (key)
   "Return the symbol used to store the normal mode binding for KEY.
@@ -71,7 +83,7 @@ is suppressed.  Falls back to `undefined' when no binding exists."
       (if original-remap
           (cl-letf (((symbol-function #'self-insert-command) (bb--self-insert-undefined-in-buffer (current-buffer))))
             (call-interactively original-remap))
-        (funcall #'undefined)))))
+        (funcall #'bb--normal-key-undefined)))))
 
 
 (keymap-set bb-normal-map "<remap> <self-insert-command>" #'bb--self-insert-remap)
