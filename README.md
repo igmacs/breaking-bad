@@ -23,15 +23,15 @@ features/advantages that I want to replicate
 
 ## Other features specific to this package
 
-- I want to be able to have assign different commands to the same
-  binding in different major modes
+- I want to be able to assign different commands to the same binding
+  in different major modes
 
 ## Adoption levels
 
 I would like to have some variable that indicated the level of
 adoption and enable or disable a number of features depending on it,
 but that still requires some though. For now, adoption levels will
-just correspond to commits in this repository.
+just correspond to progress and commits in this repository.
 
 ### Level 1
 
@@ -50,12 +50,15 @@ This level also introduces the minor mode for insert-mode, which will
 be enabled for the current buffer when pressing `i` in
 normal-mode. This mode is just normal Emacs behaviour, except
 - `C-g` exits it and enters normal-mode again
+- Some commands or combinations of commands will result in immediately
+  changing to normal mode again, to avoid the user to just be always
+  in insert mode to have usual Emacs behavior
 
 ## Comparison with other packages
 
 ### Evil mode
 
 This is the most famous package for Vim emulation, and the one I will
-try to use as inspiration for this package. The idea is that after
-completing this project, I should be able to just start using
-evil-mode instead of this package.
+try to use as inspiration for this package, as this package name
+suggests. The idea is that after completing this project, I should be
+able to just start using evil-mode instead of this package.
