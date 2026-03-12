@@ -96,10 +96,10 @@ normal mode binding instead."
                 (lambda () (interactive) (message "Use normal mode binding!!!")))))
 
 (bb-set-normal-key "i" #'bb-insert-mode)
-(bb-set-normal-key "h" #'backward-char)
-(bb-set-normal-key "j" #'next-line)
-(bb-set-normal-key "k" #'previous-line)
-(bb-set-normal-key "l" #'forward-char)
+;; (bb-set-normal-key "h" #'backward-char)
+;; (bb-set-normal-key "j" #'next-line)
+;; (bb-set-normal-key "k" #'previous-line)
+;; (bb-set-normal-key "l" #'forward-char)
 
 (defun bb-set-normal-key-local (key binding)
   "Bind KEY to BINDING in normal mode, buffer-locally.
