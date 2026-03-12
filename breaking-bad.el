@@ -117,6 +117,7 @@ only affects the current buffer."
   "Keymap for my insert state.")
 
 (defvar-local bb--change-tick-counter 0)
+(defvar-local bb--point-tracker nil)
 
 (defun bb--exit-insert-mode-when-not-inserting ()
   "Switch back to normal mode after a command that did not insert text.
@@ -124,9 +125,12 @@ Runs on `post-command-hook' while insert mode is active.  If the buffer
 modification tick did not change and the command was not the one that
 activates insert mode, `bb-normal-mode' is re-enabled."
   (let ((last-tick-counter bb--change-tick-counter)
-        (new-tick-counter (setq-local bb--change-tick-counter (buffer-chars-modified-tick))))
+        (new-tick-counter (setq-local bb--change-tick-counter (buffer-chars-modified-tick)))
+        (last-point bb--point-tracker)
+        (new-point (setq-local bb--point-tracker (point))))
     (unless (eq this-command #'bb--self-insert-remap) ;; This is the command that usually enables insert-mode
-      (when (eq last-tick-counter new-tick-counter)
+      (when (and (eq last-tick-counter new-tick-counter)
+                 (eq last-point new-point))
         (bb-normal-mode 1)))))
 
 (define-minor-mode bb-insert-mode
