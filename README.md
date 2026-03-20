@@ -41,8 +41,8 @@ and insert modes.
 This level introduces a minor mode for normal-mode, which can be
 enabled globally, and which remaps `self-insert-command` to a command
 that calls the function in the variable `bb-normal-binding-for-<key>`,
-which by default is just doing nothing. This tries to place nicely
-with already exisiting remaps like `org-self-insert-command`: if the
+which by default is just doing nothing. This tries to play nicely with
+already exisiting remaps like `org-self-insert-command`: if the
 default is not overriden this package will allow that remap to do its
 thing, and only interfere when it actually tries to self insert. In
 this level, no command is actually assigned by default to any key,
